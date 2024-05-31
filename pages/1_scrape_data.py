@@ -29,6 +29,8 @@ if st.button('Scrape Data'):
     url = CATEGORIES[category]
     items = scrape_pages(url, pages, tv=True if category == "TV Home Cinema" else False)
     
+    print("items", items)
+
     # Convert the list of dictionaries to a DataFrame
     df = pd.DataFrame(items)
     
