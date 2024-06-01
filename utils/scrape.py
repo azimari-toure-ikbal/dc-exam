@@ -98,6 +98,8 @@ def scrape_pages(url, pages, tv=False):
     urls = []
     items = []
     current_page = 1
+
+    print("Scraping pages from", url, "with", pages, "pages")
     
     while url and current_page <= pages:
         url_to_scrape = f"{url}?page={current_page}"
