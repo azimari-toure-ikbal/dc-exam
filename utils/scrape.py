@@ -1,8 +1,12 @@
 from requests import get
 from bs4 import BeautifulSoup as bs
 
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
 def scrape_tv_details(url):
-    res = get(url)
+    res = get(url, headers=headers)
     
     if res.status_code != 200:
         print("Une erreur est survenue lors du chargement de la page", url, res.status_code)
@@ -52,7 +56,7 @@ def scrape_tv_details(url):
     return data
 
 def scrape_details(url):
-    res = get(url)
+    res = get(url, headers=headers)
     
     if res.status_code != 200:
         print("Une erreur est survenue lors du chargement de la page", url, res.status_code)
@@ -103,7 +107,7 @@ def scrape_pages(url, pages, tv=False):
     
     while url and current_page <= pages:
         url_to_scrape = f"{url}?page={current_page}"
-        res = get(url_to_scrape)
+        res = get(url_to_scrape, headers=headers)
         
         if res.status_code != 200:
             print("Une erreur est survenue lors du chargement de la page", url, res.status_code)
