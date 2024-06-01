@@ -1,3 +1,4 @@
+import pandas as pd
 from requests import get
 from bs4 import BeautifulSoup as bs
 
@@ -135,3 +136,41 @@ def scrape_pages(url, pages, tv=False):
             items.append(scrape_details(url))
     
     return items
+
+
+def test(selected_page):
+    df = pd.DataFrame()
+    for p in range(1, selected_page+1):
+        url=f'https://dakarvente.com/index.php?page=annonces_categorie&id=13&sort=&nb={p}'
+        res = get(url)
+        # soup = bs(res.text, "html.parser")
+        bsoup = bs(res.text, "html.parser")#stocker le code html dans un objet bs
+        conteneurs = bsoup. find_all('article', class_='col-xs-6 col-sm-4 col-md-6 col-lg-4 item item-product-grid-3 post')
+        data= []
+
+        for conteneur in conteneurs:
+            try:
+                link = 'https://dakarvente.com/annonces-categorie-terrains-vendre-13.html' + conteneur. find('a', class_="") ['href']
+                if link is not None:#Sauter Lien Location vente auto
+                        res_c = get(link)
+                        bsoup_c = bs(res_c.text, "html.parser")
+                inf_gen = conteneur. find('div', class_='item-inner mv-effect-translate-1 mv-box-shadow-gray-1'). find_all('div')
+                prix = inf_gen[3]. text.replace(" ", "").replace("FCFA", "").strip()
+                details = inf_gen[4].text.strip()
+                adresse = inf_gen[5].text.strip()
+                image = conteneur. find ('img' )['src']
+                dico = {
+                    'V1': details,
+                    'V2(FCFA)': prix,
+                    'V3': adresse,
+                    'V4': image
+                }
+
+                data. append (dico)
+            except:
+                pass
+                
+        df1 = pd. DataFrame(data)
+        df = pd. concat ([df, df1],axis = 0). reset_index(drop = True)
+
+    return df
